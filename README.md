@@ -7,7 +7,6 @@ You will need the following installed to follow this example:
 - Kubectl
 - Docker
 - Python 3.9
-- Azure CLI
 - Minikube
 
 ## Python Fast Api
@@ -133,4 +132,3 @@ kubectl apply -n argocd -f argocd/argocd-repos-configmap.yaml
 # Deploy argo cd application
 kubectl apply -n argocd -f argocd/application.yaml
 ```
-

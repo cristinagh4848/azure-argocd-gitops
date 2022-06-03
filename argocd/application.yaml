@@ -32,3 +32,5 @@ spec:
     automated:
       selfHeal: true # prevent manual changes, 
       prune: true # remove resources no longer defined
+    retry:
+      limit: 3
