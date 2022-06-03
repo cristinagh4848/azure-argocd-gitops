@@ -5,8 +5,13 @@ image:
   pullPolicy: IfNotPresent
   tag: 1.0.0
 
+service:
+  type: NodePort
+  port: 80
+  nodePort: 30080
+
 ingress:
-  enabled: true
+  enabled: false
   className: ""
   annotations: {}
   hosts:
