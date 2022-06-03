@@ -1,0 +1,7 @@
+@local = "localhost"
+@minikube = "argocd-python-fastapi.local"
+@host = {{local}}
+
+GET http://{{host}}/items/5?q=somequery HTTP/1.1
+
+###
