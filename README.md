@@ -106,7 +106,7 @@ The cli let's you login to the server and configure various things. You can read
 As I'm using WSL2 and Minkube in this example, I'm just going to use a node port as mentioned above.
 ```bash
 # So we can access from local outside of WSL2
-kubectl apply -n argocd -f  argo/argo-wsl-custom-nodeport-svc.yaml
+kubectl apply -n argocd -f  argocd/argocd-wsl-custom-nodeport-svc.yaml
 
 # Login at https://localhost:30082 with username admin and auto generated secret which you can get running:
 kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
@@ -118,8 +118,16 @@ When deploying to the cloud, you will need to expose ArgoCd using a Load Balance
 
 ```bash
 # So I can use ssh, I created an ssh key pair and uploaded it to my github account. I created a k8s secret so we can reference this in our argocd application manifest when defining repositories
+
+# NOTE: github ssh key issue discussed here https://github.com/argoproj/argo-cd/issues/7600
+ssh-keygen -t ed25519 -a 100
+
+# Add secret to argocd namespace
 kubectl create secret generic github-private-key \
-    --from-file=privateKey=/hom/josh/.ssh/argocd_id_rsa \
+    --from-file=privateKey=/home/josh/.ssh/argocd_id_ed25519 \
     --namespace argocd
+
+# Update ArgoCD config map with repo ssh creds
+kubectl apply -n argocd -f argocd/argocd-repos-configmap.yaml
 ```
 

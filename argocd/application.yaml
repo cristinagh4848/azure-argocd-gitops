@@ -7,11 +7,10 @@ spec:
   project: default # you can group certain applications inside argocd
   
   source:
-    repoURL: https://github.com/jhawthorn22/azure-argocd-gitops.git
+    repoURL: git@github.com:jhawthorn22/azure-argocd-gitops.git
     targetRevision: HEAD
-    path: apps/fastapi/helm-config # check this
+    path: charts/apps # check this
     
-    chart: charts/apps
     helm:
       # Release name override (defaults to application name)
       releaseName: argocd-python-fastapi
@@ -19,7 +18,7 @@ spec:
       # Helm values files for overriding values in the helm chart
       # The path is relative to the spec.source.path directory defined above
       valueFiles:
-      - minikube.yaml
+      - ../../apps/fastapi/helm-config/minikube.yaml
   
   destination:
     server: https://kubernetes.default.svc
