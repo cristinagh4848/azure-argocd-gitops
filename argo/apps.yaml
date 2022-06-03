@@ -11,7 +11,7 @@ spec:
     targetRevision: HEAD
     path: apps/fastapi/helm-config # check this
     
-    # chart: chart-name  # Set this when pulling directly from a Helm repo. DO NOT set for git-hosted Helm charts.
+    chart: charts/apps
     helm:
       # Release name override (defaults to application name)
       releaseName: argocd-python-fastapi
