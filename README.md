@@ -129,5 +129,8 @@ kubectl create secret generic github-private-key \
 
 # Update ArgoCD config map with repo ssh creds
 kubectl apply -n argocd -f argocd/argocd-repos-configmap.yaml
+
+# Deploy argo cd application
+kubectl apply -n argocd -f argocd/application.yaml
 ```
 
