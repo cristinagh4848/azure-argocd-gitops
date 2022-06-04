@@ -39,16 +39,16 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 5
+              path: {{ include ".Values.livenessProbe.httpGet.path" . }}
+              port: {{ include ".Values.livenessProbe.httpGet.port" . }}
+            initialDelaySeconds: {{ include ".Values.livenessProbe.initialDelaySeconds" . }}
+            periodSeconds: {{ include ".Values.livenessProbe.periodSeconds" . }}
           readinessProbe:
             httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 10
-            periodSeconds: 5
+              path: {{ include ".Values.readinessProbe.httpGet.path" . }}
+              port: {{ include ".Values.readinessProbe.httpGet.port" . }}
+            initialDelaySeconds: {{ include ".Values.readinessProbe.initialDelaySeconds" . }}
+            periodSeconds: {{ include ".Values.readinessProbe.periodSeconds" . }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

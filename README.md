@@ -190,14 +190,15 @@ argocd app create argocd-nodejs-express \
     --repo git@github.com:jhawthorn22/azure-argocd-gitops.git \
     --path charts/apps \
     --release-name argocd-nodejs-express \
-    --values "../../apps/express/helm-config/minikube.yaml"
+    --values "../../apps/express/helm-config/minikube.yaml" \
     --dest-server https://kubernetes.default.svc \
     --dest-namespace apps \
+    --sync-policy auto \
     --sync-option CreateNamespace=true \
     --self-heal \
     --auto-prune \
     --sync-retry-limit 5 \
-    --label "depoyed-via-argocd-cli"
+    --label "depoyed-via-argocd-cli=true"
 
 ```
 
