@@ -1,19 +1,25 @@
 # Hackathon ArgoCD Python FastApi Example
 
-## Requirements
 
+
+## Requirements
 You will need the following installed to follow this example:
 - Helm
 - Kubectl
 - Docker
 - Python 3.9
 - Minikube
+- Npm 8.5.5
+- Node 16.15.0
+
+
 
 ## Python Fast Api
 Links:
 - https://fastapi.tiangolo.com/deployment/docker/
-- 
 - https://levelup.gitconnected.com/getting-started-with-argocd-on-your-kubernetes-cluster-552ca5d8cf41
+
+
 
 ### Build Docker Image and Run Locally
 ```bash
@@ -22,6 +28,8 @@ docker run -d --name argocd-python-fastapi -p 80:80 argocd-python-fastapi:latest
 
 # NOTE: You can access swagger at localhost/docs or localhost/redocs once container is running
 ```
+
+
 
 ### Push Docker Image to Docker Hub
 ```bash
@@ -34,6 +42,7 @@ docker images
 docker tag argocd-python-fastapi jhawthorn22/argocd-python-fastapi:1.0.0
 docker push jhawthorn22/argocd-python-fastapi:1.0.0
 ```
+
 
 
 ## Minikube Config and Helm Deployment
@@ -63,6 +72,8 @@ helm upgrade --install argocd-python-fastapi charts/apps \
 curl http://localhost:30080/items/5\?q\=somequery
 ```
 
+
+
 ### Minikube Enabling NGINX
 ```bash
 # If you need, enable nginx for minikube
@@ -81,6 +92,7 @@ sudo -- sh -c "echo \"192.168.49.2 argocd-python-fastapi.local\" >> /etc/hosts"
 curl http://argocd-python-fastapi.local/items/5\?q\=somequery
 ```
 
+
 ## Deploy ArgoCD on Minikube and Login
 
 Links: 
@@ -91,14 +103,9 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
-### ArgoCD CLI
-
-There is a argocd cli you can install using brew:
-```bash
-brew install argocd
-```
-
 The cli let's you login to the server and configure various things. You can read more about this here: https://argo-cd.readthedocs.io/en/stable/getting_started/#4-login-using-the-cli
+
+
 
 ### Accessing Argo CD Api Server
 
@@ -112,6 +119,8 @@ kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 
 When deploying to the cloud, you will need to expose ArgoCd using a Load Balancer, Ingress or port forwarding. See here for details: https://argo-cd.readthedocs.io/en/stable/getting_started/#3-access-the-argo-cd-api-server
+
+
 
 ### Deploying our ArgoCD Application using Github Repository
 
@@ -132,3 +141,84 @@ kubectl apply -n argocd -f argocd/argocd-repos-configmap.yaml
 # Deploy argo cd application
 kubectl apply -n argocd -f argocd/application.yaml
 ```
+
+
+
+## NodeJS Express Api
+Links:
+- https://code.visualstudio.com/docs/containers/quickstart-node
+
+```bash
+# @ express directory
+npm install
+
+# run app locally
+npm run start
+curl localhost:3000
+
+# docker build
+docker build -t argocd-nodejs-express:latest .
+
+# docker run
+docker run --rm -d  -p 3000:3000/tcp argocd-nodejs-express:latest
+curl localhost:3000
+
+# tag and push
+docker tag argocd-nodejs-express jhawthorn22/argocd-nodejs-express:1.0.0
+docker push jhawthorn22/argocd-nodejs-express:1.0.0
+```
+
+
+
+### ArgoCD CLI
+There is also fancy argocd cli you can use to setup apps in your cluster. Commands below show you how I deploy a nodejs express app using it.
+
+```bash
+# Install argocd
+# NOTE: I just used linuxbrew for this, there is probably a much better way to install this on WSL2 Ubuntu, I was just being lazy!
+brew install argocd
+
+# login to argocd instance
+# NOTE: if you need to fetch auto generate admin password again you can  run this
+kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+argocd login localhost:30082
+
+# Setup an application using the cli
+argocd app create argocd-nodejs-express \
+    --project default \
+    --revision HEAD \
+    --repo git@github.com:jhawthorn22/azure-argocd-gitops.git \
+    --path charts/apps \
+    --release-name argocd-nodejs-express \
+    --values "../../apps/express/helm-config/minikube.yaml"
+    --dest-server https://kubernetes.default.svc \
+    --dest-namespace apps \
+    --sync-option CreateNamespace=true \
+    --self-heal \
+    --auto-prune \
+    --sync-retry-limit 5 \
+    --label "depoyed-via-argocd-cli"
+
+```
+
+
+
+#### ArgoCD CLI Update Admin Password
+```bash
+# assuming you've logged in...
+argocd account update-password
+```
+
+
+
+#### ArgoCD CLI Deploying to External Clusters (Multicluster Architecture)
+If deploying to an external cluster (a cluster where ArgoCD isn't installed), you will need to define the cluster. Only required for multi cluster architectires. For this minikube example, you can skip this!
+```bash
+kubectl config get-contexts -o {name}
+argocd cluster add {name}
+```
+
+
+
+## Links
+- https://github.com/argoproj/argocd-example-apps
