@@ -17,3 +17,11 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+livenessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 5
+
+readinessProbe:
+  initialDelaySeconds: 20
+  periodSeconds: 5
