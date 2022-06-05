@@ -5,3 +5,4 @@
 5. Explore ArgoCD CLI more and add example commands to README.md, deploy node js using it with rollback
 6. Template liveiness and readiness probes in helm charts
 7. Init rollback from UI and renable auto sync
+8. Nodejs health check endpoint should use external library
